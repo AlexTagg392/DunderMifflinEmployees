@@ -1,6 +1,5 @@
 var mysql = require("mysql");
 var { prompt } = require("inquirer");
-const { allowedNodeEnvironmentFlags } = require("process");
 
 var connection = mysql.createConnection({
   host: "localhost",
@@ -18,7 +17,7 @@ connection.connect(function(err) {
 function runApp() {
     console.table("Welcome to Dunder Mifflin!")
     prompt({
-        name: "action",
+      name: "action",
       type: "rawlist",
       message: "What would you like to do?",
       choices: [
@@ -56,6 +55,7 @@ function runApp() {
                 updateRole();
                 break;
             case "Exit":
+                connection.end();
                     break;
         }
     });
@@ -77,7 +77,7 @@ function viewAllByDept() {
     prompt({
         name: "department",
         type: "input",
-        message: "Which Department would you like to view? Ex: Management = 1, Sales = 2, Accounting = 3, Quality Assurance = 4, Human Resources = 5, Customer Service = 6, Warehouse = 7, Administrative Dept. = 8. What is your number of choice?",
+        message: "Which Department would you like to view?",
    
     })
     .then(function(answer) {
@@ -87,11 +87,12 @@ function viewAllByDept() {
         FROM department 
         INNER JOIN role ON (department.id = role.department_id)
         INNER JOIN employee ON (role.id = employee.role_id)
-        WHERE (department.id = ? AND role.department_id = ?)
+        WHERE (department.name = ?)
         ORDER BY department.id
         `;
-        connection.query(query, [answer.department, answer.department], function(err, res) {
+        connection.query(query, [answer.department], function(err, res) {
                 console.table(res);
+        runApp();
         })
     })
 }
@@ -100,7 +101,6 @@ function viewAllByRole() {
         name: "role",
         type: "rawlist",
         message: "Which Role would you like to view?",
-        // Ex: Manager = 1, Sales = 2, Accounting = 3, Quality Assurance = 4, Human Resources = 5, Customer Service = 6, Warehouse = 7, Administrative Dept. = 8. What is your number of choice?
         choices: [
             "Regional Manager",
             "Assistant Regional Manager",
@@ -128,21 +128,82 @@ function viewAllByRole() {
         `;
         connection.query(query, [answer.role, answer.role], function(err, res) {
                 console.table(res);
+        runApp();
         })
     })
 }
-// function addDepartment() {
-//     console.log("Success")
-//     runApp();
-// }
-// function addRole() {
-//     console.log("Success")
-//     runApp();
-// }
-// function addEmployee() {
-//     console.log("Success")
-//     runApp();
-// }
+function addDepartment() {
+    prompt ({
+        name: "newDepartment",
+        type: "input",
+        message: "What is the Name of the new Department that you would like to add",
+    })
+    .then(function(answer) {
+        const query = 
+        `INSERT INTO department (name)
+        VALUES (?);
+        `;
+        connection.query(query, [answer.newDepartment], function(err, res) {
+            console.table(res);
+            console.log("Its been added!");
+        runApp();
+        })
+    })
+}
+function addRole() {
+    prompt ([
+        {
+        name: "newRole",
+        type: "input",
+        message: "What is the title of the new Role?",
+    },
+    {
+        name: "salary",
+        type: "input",
+        message: "What is the salary of the new Role?",
+    },
+    {
+        name: "departmentId",
+        type: "input",
+        message: "What is the Department Id of the new Role? Management = 1, Sales = 2, Accounting = 3, QA = 4, HR = 5, CS = 6, Warehouse = 7, Admin = 8",
+    },
+])
+    .then(function(answer) {
+        const query = 
+        `INSERT INTO role (title, salary, department_id)
+        VALUES (?, ?, ?);
+        `;
+        connection.query(query, [answer.newRole, answer.salary, answer.departmentId], function(err, res) {
+            console.table(res);
+            console.log("Its been added!");
+        runApp();
+        })
+    })
+}
+function addEmployee() {
+    prompt ([{
+        name: "firstName",
+        type: "input",
+        message: "What is the first name of the new Employee?",
+    },
+    {
+        name: "lastName",
+        type: "input",
+        message: "What is the last name of the new employee?",
+    },
+])
+    .then(function(answer) {
+        const query = 
+        `INSERT INTO employee (first_name, last_name, role_id, manager_id)
+        VALUES (?, ?, 4, 1);
+        `;
+        connection.query(query, [answer.firstName, answer.lastName], function(err, res) {
+            console.table(res);
+            console.log("Its been added!");
+        runApp();
+        })
+    })
+}
 // function updateRole() {
 //     console.log("Success")
 //     runApp();
