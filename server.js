@@ -204,7 +204,34 @@ function addEmployee() {
         })
     })
 }
-// function updateRole() {
-//     console.log("Success")
-//     runApp();
-// }
+function updateRole() {
+    prompt ([
+        {
+        name: "title",
+        type: "input",
+        message: "What is the title of the Role you want to update?",
+    },
+    {
+        name: "salary",
+        type: "input",
+        message: "What is the salary of the updated Role?",
+    },
+    {
+        name: "departmentId",
+        type: "input",
+        message: "What is the Department Id of the updated Role? Management = 1, Sales = 2, Accounting = 3, QA = 4, HR = 5, CS = 6, Warehouse = 7, Admin = 8",
+    },
+])
+    .then(function(answer) {
+        const query = 
+        `UPDATE role 
+        SET title = ?, salary = ?, department_id = ?
+        WHERE title = ?;
+        `;
+        connection.query(query, [answer.title, answer.salary, answer.departmentId, answer.title], function(err, res) {
+            console.table(res);
+            console.log("Its been added!");
+        runApp();
+        })
+    })
+}
