@@ -34,7 +34,8 @@ VALUES ("Management"),
 ("Human Resources"),
 ("Customer Service"), 
 ("Warehouse"),
-("Administrative Dept."); 
+("Administrative Dept.");
+("Corporate") 
 
 INSERT INTO role (title, salary, department_id)
 VALUES ("Regional Manager", 60000, 1), 
@@ -49,7 +50,9 @@ VALUES ("Regional Manager", 60000, 1),
 ("Warehouse Foreman", 58000, 7),
 ("Warehouse Worker", 40000, 7),
 ("Office Manager", 43000, 8),
-("Receptionist", 40000, 8); 
+("Receptionist", 40000, 8), 
+("CEO", 85000, 9),
+("VP of Sales", 70000, 9)
 
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
 VALUES ("Michael", "Scott", 1, null),
@@ -65,7 +68,9 @@ VALUES ("Michael", "Scott", 1, null),
 ("Darryl", "Philbin", 10, 1),
 ("Roy", "Anderson", 11, 11),
 ("Pam", "Halpert", 12, 1),
-("Erin", "Hannon", 13, 13);
+("Erin", "Hannon", 13, 13),
+("David", "Wallace", 14, null),
+("Jan", "Levison-Gould", 15, 15);
 
 SELECT * FROM department;
 SELECT * FROM role;
